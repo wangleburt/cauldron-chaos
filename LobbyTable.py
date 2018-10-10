@@ -1,11 +1,13 @@
 import ButtonLight
 import ButtonControl
+import TableConfig
 
 class LobbyTable:
     def __init__(self, tableNumber):
         self.tableNumber = tableNumber
-        self.light = ButtonLight.ButtonLight()
-        self.button = ButtonControl.ButtonControl()
+        tableConfig = TableConfig.TABLES[tableNumber]
+        self.light = ButtonLight.ButtonLight(tableConfig)
+        self.button = ButtonControl.ButtonControl(tableConfig)
     
     def update(self, timeSinceLastUpdate):
         self.light.update(timeSinceLastUpdate)

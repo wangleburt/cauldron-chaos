@@ -70,6 +70,7 @@ class GameController:
         return;
 
     def runGame(self):
+        self._soundManager.playGameMusic()
         cycle = 0
         while self._timeRemaining > 0:
             sleep(TIME_PER_CYCLE)

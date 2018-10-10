@@ -16,3 +16,6 @@ class SoundManager:
     
     def playLobbyMusic(self):
         pass
+    
+    def playGameMusic(self):
+        pass

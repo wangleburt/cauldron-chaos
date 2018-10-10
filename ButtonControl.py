@@ -1,14 +1,17 @@
 
+import wiringpi
+
 BUFFER_THRESHOLD = 5
 
 class ButtonControl:
-    def __init__(self):
+    def __init__(self, tableConfig):
         self._buttonState = False
         self._stateBuffer = []
         self._didClickButton = False
+        self._tableConfig = tableConfig
     
     def update(self):
-        buttonState = self._getButtonState()
+        buttonState = self._getButtonState()        
         if len(self._stateBuffer) > 0:
             self._stateBuffer.append(buttonState)
             self._checkStateBuffer()
@@ -46,6 +49,6 @@ class ButtonControl:
             return False
     
     def _getButtonState(self):
-        # use wiring to read button
-        return False
-
+        pin = self._tableConfig.signalPin
+        return not wiringpi.digitalRead(pin)
+        #return False

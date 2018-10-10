@@ -2,9 +2,9 @@ import SoundManager
 import LobbyTable
 import ButtonLight
 import ButtonControl
+from time import sleep
 
-
-TIME_PER_CYCLE = 0.01
+TIME_PER_CYCLE = 0.005
 
 class LobbyController:
     def __init__(self, soundManager):
@@ -22,7 +22,7 @@ class LobbyController:
             self.activeTableNumbers.append(table.tableNumber)
         return
     
-    def _waitForInit():
+    def _waitForInit(self):
         leadTable = self._tables[0]
         leadTable.light.setLightState(ButtonLight.CYCLE_BLINK)
         self._tables[1].light.setLightState(ButtonLight.OFF)
@@ -40,13 +40,13 @@ class LobbyController:
                 break
         return
     
-    def _waitForActiveTables():
+    def _waitForActiveTables(self):
         leadTable = self._tables[0]
         activeTables = [leadTable]
         while True:
             sleep(TIME_PER_CYCLE)
             leadTable.update(TIME_PER_CYCLE)
-            if leadTable.didClickButton():
+            if leadTable.button.didClickButton():
                 return activeTables
             
             for tableNumber in [1,2,3]:
