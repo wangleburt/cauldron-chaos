@@ -3,29 +3,26 @@ import LobbyController
 import GameController
 import wiringpi
 import TableConfig
+import SkeletonManager
 
 import pygame
 
 wiringpi.wiringPiSetupGpio()
 pygame.init()
 TableConfig.setupPinModes()
+SkeletonManager.setupPinModes()
 
 soundManager = SoundManager.SoundManager()
-
 lobbyController = LobbyController.LobbyController(soundManager)
 gameController = GameController.GameController(soundManager)
 
-'''
-gameController.setupNewGameWithTableNumbers([0,1,3])
-gameController.runGame()
-'''
-
+SkeletonManager.skeletonDown()
 while True:
     lobbyController.runLobby()
-    print(lobbyController.activeTableNumbers)
     gameController.setupNewGameWithTableNumbers(lobbyController.activeTableNumbers)
     gameController.runGame()
     if gameController.victory:
-        pass # TODO: do victory stuff
+        SkeletonManager.skeletonUp()
+        # TODO: play victory sound effect
     else:
-        pass # TODO: do defeat stuff
+        pass # TODO: play defeat sound effect

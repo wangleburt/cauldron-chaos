@@ -2,6 +2,7 @@ import SoundManager
 import LobbyTable
 import ButtonLight
 import ButtonControl
+import SkeletonManager
 from time import sleep
 
 TIME_PER_CYCLE = 0.005
@@ -17,6 +18,7 @@ class LobbyController:
         self._soundManager.playLobbyMusic()
         self.activeTableNumbers[:] = []
         self._waitForInit()
+        SkeletonManager.skeletonDown()
         activeTables = self._waitForActiveTables()
         for table in activeTables:
             self.activeTableNumbers.append(table.tableNumber)
