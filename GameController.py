@@ -1,10 +1,11 @@
 import ScoreKeeper
 import GameTable
 import SoundManager
+import JankyWindow
 from time import sleep
 
 # all times in seconds
-GAME_TIME = 5
+GAME_TIME = 60
 MULTIPLIER_TIME = 5
 TIME_PER_CYCLE = 0.05
 
@@ -70,12 +71,20 @@ class GameController:
         return;
 
     def runGame(self):
-        self._soundManager.playGameMusic()
-        cycle = 0
+        #cycle = 0
+        winningScore = ScoreKeeper.winningScoreForTableCount(len(self._tables))
         while self._timeRemaining > 0:
             sleep(TIME_PER_CYCLE)
             self._update(TIME_PER_CYCLE)
+            print("Game time remaining: " + str(self._timeRemaining))
+            if JankyWindow.didClickMouse():
+                self._tables[0].pendingScore = ScoreKeeper.GREEN_SCORE
+            score = self._scoreKeeper.scoreForTeam()
+            if score >= winningScore:
+                self.victory = True
+                break
             
+            '''
             # debug output
             print("Team: " + str(self._scoreKeeper.scoreForTeam()))
             print("Multiplier: " + str(self._calculateMultiplier()))
@@ -87,10 +96,9 @@ class GameController:
                     self._tables[index].pendingScore = ScoreKeeper.PURPLE_SCORE
                 else:
                     self._tables[index].pendingScore = ScoreKeeper.GREEN_SCORE
+            '''
+            
         
-        score = self._scoreKeeper.scoreForTeam()
-        winningScore = ScoreKeeper.winningScoreForTableCount(len(self._tables))
-        self.victory = (score >= winningScore)
         return
         
     

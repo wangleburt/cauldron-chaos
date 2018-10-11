@@ -27,9 +27,13 @@ class TableConfig:
 TABLES = [TableConfig(tableNumber) for tableNumber in [0,1,2,3]]
 TABLES[0].lightPin = BUTTON_0_LIGHT
 TABLES[0].signalPin = BUTTON_0_SIGNAL
+TABLES[0].name = "Joe"
 TABLES[1].lightPin = BUTTON_1_LIGHT
 TABLES[1].signalPin = BUTTON_1_SIGNAL
+TABLES[1].name = "Cassie"
 TABLES[2].lightPin = BUTTON_2_LIGHT
 TABLES[2].signalPin = BUTTON_2_SIGNAL
+TABLES[2].name = "Zombo"
 TABLES[3].lightPin = BUTTON_3_LIGHT
 TABLES[3].signalPin = BUTTON_3_SIGNAL
+TABLES[3].name = "Willow"

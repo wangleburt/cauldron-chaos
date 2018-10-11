@@ -14,8 +14,15 @@ class SoundManager:
         self.powerupSound.play()
         return;
     
+    def playJoinSoundForTable(self, tableNumber):
+        self.scoreSound.play()
+        return
+    
     def playLobbyMusic(self):
         pass
     
     def playGameMusic(self):
+        pass
+    
+    def playVictoryMusic(self):
         pass

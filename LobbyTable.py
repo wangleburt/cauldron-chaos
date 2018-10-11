@@ -8,6 +8,7 @@ class LobbyTable:
         tableConfig = TableConfig.TABLES[tableNumber]
         self.light = ButtonLight.ButtonLight(tableConfig)
         self.button = ButtonControl.ButtonControl(tableConfig)
+        self.name = tableConfig.name
     
     def update(self, timeSinceLastUpdate):
         self.light.update(timeSinceLastUpdate)
