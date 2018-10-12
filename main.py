@@ -7,6 +7,7 @@ import SkeletonManager
 import JankyWindow
 
 import pygame
+from time import sleep
 
 wiringpi.wiringPiSetupGpio()
 pygame.init()
@@ -18,11 +19,10 @@ soundManager = SoundManager.SoundManager()
 lobbyController = LobbyController.LobbyController(soundManager)
 gameController = GameController.GameController(soundManager)
 
-PixelBoard.clearStrip()
 SkeletonManager.skeletonDown()
+soundManager.playLobbyMusic()
 while True:
     print("Start Lobby")
-    soundManager.playLobbyMusic()
     lobbyController.runLobby()
     activeTableNumbers = lobbyController.activeTableNumbers
     
@@ -31,9 +31,10 @@ while True:
     gameController.setupNewGameWithTableNumbers(activeTableNumbers)
     gameController.runGame()
     
+    
+    soundManager.playLobbyMusic()
     if gameController.victory:
         SkeletonManager.skeletonUp()
-        soundManager.playVictoryMusic()
         for tableNumber in activeTableNumbers:
             soundManager.playWinSoundForTable(tableNumber)
         print("Victory")
@@ -43,4 +44,5 @@ while True:
         lobbyController.runEndGameIdle()
         SkeletonManager.skeletonDown()
     else:
-        pass
+        soundManager.playFailSound()
+    

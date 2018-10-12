@@ -18,11 +18,14 @@ class GameController:
     
     def setupNewGameWithTableNumbers(self, tableNumbers):
         self._scoreKeeper = ScoreKeeper.ScoreKeeper()
+        self._winningScore = ScoreKeeper.winningScoreForTableCount(len(tableNumbers))
         self._tables = [GameTable.GameTable(tableNumber) for tableNumber in tableNumbers]
+        for table in self._tables:
+            table.scoreboard.winningScore = self._winningScore
+            table.scoreboard.gameTime = GAME_TIME
         self._timeRemaining = GAME_TIME
         self._lastSoundPlayed = GAME_TIME + SOUND_EFFECT_DELAY*2
         self._multipliers = []
-        self._winningScore = ScoreKeeper.winningScoreForTableCount(len(self._tables))
         self.victory = False
         return;
     
@@ -47,10 +50,10 @@ class GameController:
         return;
     
     def _updateTableScoreboards(self):
+        score = self._scoreKeeper.scoreForTeam()
+        print("Score: " + str(score) + " / " + str(self._winningScore))
         for table in self._tables:
-            table.scoreboard.tableScore = self._scoreKeeper.scoreForTable(table.tableNumber)
-            table.scoreboard.teamScore = self._scoreKeeper.scoreForTeam()
-            table.scoreboard.updateDisplay()
+            table.scoreboard.updateDisplay(score, self._timeRemaining)
         return;
     
     def _updateMultipliers(self):
@@ -76,7 +79,6 @@ class GameController:
         return;
 
     def runGame(self):
-        #cycle = 0
         while self._timeRemaining > 0:
             sleep(TIME_PER_CYCLE)
             self._update(TIME_PER_CYCLE)
@@ -87,22 +89,6 @@ class GameController:
             if score >= self._winningScore:
                 self.victory = True
                 break
-            
-            '''
-            # debug output
-            print("Team: " + str(self._scoreKeeper.scoreForTeam()))
-            print("Multiplier: " + str(self._calculateMultiplier()))
-            print(self._timeRemaining)
-            cycle += 1
-            if cycle % 10 == 0:
-                index = (cycle % 7) % len(self._tables)
-                if index == 0:
-                    self._tables[index].pendingScore = ScoreKeeper.PURPLE_SCORE
-                else:
-                    self._tables[index].pendingScore = ScoreKeeper.GREEN_SCORE
-            '''
-            
-        
         return
         
     
