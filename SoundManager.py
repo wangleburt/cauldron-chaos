@@ -8,7 +8,9 @@ class SoundManager:
     def __init__(self):
         self.scoreSound = pygame.mixer.Sound("sfx/points.wav")
         self.powerupSound = pygame.mixer.Sound("sfx/powerup.wav")
-        self.victorySound = pygame.mixer.Sound("sfx/skeleton-bath2.wav")
+        self.victorySound = pygame.mixer.Sound("sfx/fanfare.wav")
+        self.skeletonSound = pygame.mixer.Sound("sfx/skeleton-bath2.wav")
+        self.startingSound = pygame.mixer.Sound("sfx/ready-set-go.wav")
         self.failSound = pygame.mixer.Sound("sfx/buzzer.wav")
         self.tableSounds = [TableSoundPack() for i in range(4)]
         for i in range(4):
@@ -42,6 +44,10 @@ class SoundManager:
         self.tableSounds[tableNumber].bonusSound.play()
         return
     
+    def playStartingSound(self):
+        self.startingSound.play()
+        return
+    
     def playVictorySound(self):
         self.victorySound.play()
         return
@@ -50,19 +56,33 @@ class SoundManager:
         self.failSound.play()
         return
     
+    def playSkeletonSound(self):
+        self.skeletonSound.play()
+        return
+    
     def playLobbyMusic(self):
-        if self.currentMusic is not None and self.currentMusic is not self.lobbyMusic:
+        if self.currentMusic is self.lobbyMusic:
+            return
+        if self.currentMusic is not None:
             self.currentMusic.stop()
         self.lobbyMusic.play(-1)
         self.currentMusic = self.lobbyMusic
-        pass
+        return
     
     def playGameMusic(self):
-        if self.currentMusic is not None and self.currentMusic is not self.gameMusic:
+        if self.currentMusic is self.gameMusic:
+            return
+        if self.currentMusic is not None:
             self.currentMusic.stop()
         self.gameMusic.play(-1)
         self.currentMusic = self.gameMusic
-        pass
+        return
+    
+    def stopMusic(self):
+        if self.currentMusic is not None:
+            self.currentMusic.stop()
+            self.currentMusic = None
+        return
     
     def playVictoryMusic(self):
         pass

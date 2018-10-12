@@ -26,20 +26,21 @@ while True:
     lobbyController.runLobby()
     activeTableNumbers = lobbyController.activeTableNumbers
     
+    soundManager.stopMusic()
+    lobbyController.runStartingSequence()
+    
     print("Start Game")
     soundManager.playGameMusic()
     gameController.setupNewGameWithTableNumbers(activeTableNumbers)
     gameController.runGame()
     
-    
     soundManager.playLobbyMusic()
     if gameController.victory:
         SkeletonManager.skeletonUp()
-        for tableNumber in activeTableNumbers:
-            soundManager.playWinSoundForTable(tableNumber)
+        soundManager.playVictorySound()
         print("Victory")
         sleep(1.5)
-        soundManager.playVictorySound()
+        soundManager.playSkeletonSound()
         print("End Game Idle")
         lobbyController.runEndGameIdle()
         SkeletonManager.skeletonDown()

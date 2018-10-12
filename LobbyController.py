@@ -56,7 +56,17 @@ class LobbyController:
                 break
         for table in activeTables:
             self.activeTableNumbers.append(table.tableNumber)
+        for table in self._tables:
+            if table in activeTables:
+                table.light.setLightState(ButtonLight.ON)
+            else:
+                table.light.setLightState(ButtonLight.OFF)
         return
+    
+    def runStartingSequence(self):
+        self._soundManager.playStartingSound()
+        #TODO: play fancy flashing/fading sequence
+        sleep(3.5)
     
     '''
     def runLobby(self):
