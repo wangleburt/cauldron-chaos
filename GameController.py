@@ -8,6 +8,7 @@ from time import sleep
 GAME_TIME = 60
 MULTIPLIER_TIME = 5
 TIME_PER_CYCLE = 0.05
+SOUND_EFFECT_DELAY = 0.3
 
 class GameController:
     
@@ -19,7 +20,9 @@ class GameController:
         self._scoreKeeper = ScoreKeeper.ScoreKeeper()
         self._tables = [GameTable.GameTable(tableNumber) for tableNumber in tableNumbers]
         self._timeRemaining = GAME_TIME
+        self._lastSoundPlayed = GAME_TIME + SOUND_EFFECT_DELAY*2
         self._multipliers = []
+        self._winningScore = ScoreKeeper.winningScoreForTableCount(len(self._tables))
         self.victory = False
         return;
     
@@ -65,14 +68,15 @@ class GameController:
 
     def _playSoundForScore(self, score):
         if score == ScoreKeeper.GREEN_SCORE:
-            self._soundManager.playScoreSound()
+            if self._lastSoundPlayed > self._timeRemaining + SOUND_EFFECT_DELAY:
+                self._soundManager.playScoreSound()
+                self._lastSoundPlayed = self._timeRemaining
         elif score == ScoreKeeper.PURPLE_SCORE:
             self._soundManager.playPowerupSound()
         return;
 
     def runGame(self):
         #cycle = 0
-        winningScore = ScoreKeeper.winningScoreForTableCount(len(self._tables))
         while self._timeRemaining > 0:
             sleep(TIME_PER_CYCLE)
             self._update(TIME_PER_CYCLE)
@@ -80,7 +84,7 @@ class GameController:
             if JankyWindow.didClickMouse():
                 self._tables[0].pendingScore = ScoreKeeper.GREEN_SCORE
             score = self._scoreKeeper.scoreForTeam()
-            if score >= winningScore:
+            if score >= self._winningScore:
                 self.victory = True
                 break
             

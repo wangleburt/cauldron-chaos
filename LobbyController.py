@@ -50,6 +50,7 @@ class LobbyController:
                     else:
                         activeTables.append(table)
                         table.light.setLightState(ButtonLight.ON)
+                        self._soundManager.playJoinSoundForTable(table.tableNumber)
                         print(table.name + " joined")
             if len(activeTables) >= len(self._tables):
                 break
