@@ -16,17 +16,18 @@ class LobbyController:
         return
     
     def runEndGameIdle(self):
-        running = True
+        startingTime = 15
+        timeRemaining = startingTime
         for table in self._tables:
             table.light.setLightState(ButtonLight.OFF)
-        while running:
+        while timeRemaining > 0:
             sleep(TIME_PER_CYCLE)
-            JankyWindow.idle()
-            for table in self._tables:
-                table.update(TIME_PER_CYCLE)
-                if table.button.didClickButton():
-                    running = False
-                    break
+            timeRemaining -= TIME_PER_CYCLE
+            if timeRemaining < startingTime - 5:
+                if JankyWindow.didClickMouse():
+                    break;
+            else:
+                JankyWindow.idle()
         return
     
     def runLobby(self):
@@ -37,17 +38,17 @@ class LobbyController:
             table.light.setLightState(ButtonLight.CYCLE_BLINK)
         while timeRemaining > 0:
             sleep(TIME_PER_CYCLE)
-            JankyWindow.idle()
             if len(activeTables) > 0:
                 timeRemaining -= TIME_PER_CYCLE
                 print("Lobby time remaining: " + str(timeRemaining))
+                if JankyWindow.didClickMouse():
+                    break
+            else:
+                JankyWindow.idle()
             for table in self._tables:
                 table.update(TIME_PER_CYCLE)
                 if table.button.didClickButton():
-                    if table in activeTables:
-                        timeRemaining -= 3
-                        print(table.name + " is impatient!")
-                    else:
+                    if table not in activeTables:
                         activeTables.append(table)
                         table.light.setLightState(ButtonLight.ON)
                         self._soundManager.playJoinSoundForTable(table.tableNumber)

@@ -7,20 +7,25 @@ class TableSoundPack:
 class SoundManager:
     def __init__(self):
         self.scoreSound = pygame.mixer.Sound("sfx/points.wav")
+        self.scoreSound.set_volume(0.6)
         self.powerupSound = pygame.mixer.Sound("sfx/powerup.wav")
         self.victorySound = pygame.mixer.Sound("sfx/fanfare.wav")
-        self.skeletonSound = pygame.mixer.Sound("sfx/skeleton-bath2.wav")
+        self.skeletonSound = pygame.mixer.Sound("sfx/skeleton-bath.wav")
         self.startingSound = pygame.mixer.Sound("sfx/ready-set-go.wav")
+        self.startingSound.set_volume(0.3)
         self.failSound = pygame.mixer.Sound("sfx/buzzer.wav")
         self.tableSounds = [TableSoundPack() for i in range(4)]
         for i in range(4):
             config = TableConfig.TABLES[i]
             self.tableSounds[i].joinSound = pygame.mixer.Sound(config.joinSound)
+            self.tableSounds[i].joinSound.set_volume(config.soundVolume)
             self.tableSounds[i].winSound = pygame.mixer.Sound(config.winSound)
+            self.tableSounds[i].winSound.set_volume(config.soundVolume)
             self.tableSounds[i].bonusSound = pygame.mixer.Sound(config.bonusSound)
+            self.tableSounds[i].bonusSound.set_volume(config.soundVolume)
         self.lobbyMusic = pygame.mixer.Sound("music/Lobby Music 1.ogg")
+        self.lobbyMusic.set_volume(0.8)
         self.gameMusic = pygame.mixer.Sound("music/Game Music 1.ogg")
-        self.gameMusic.set_volume(1)
         self.currentMusic = None
         return;
     

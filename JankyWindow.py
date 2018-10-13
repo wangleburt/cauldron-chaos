@@ -13,4 +13,8 @@ def didClickMouse():
 def idle():
     pygame.event.pump()
     return
+
+def clear():
+    pygame.event.clear()
+    return
     

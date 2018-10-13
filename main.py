@@ -5,6 +5,7 @@ import wiringpi
 import TableConfig
 import SkeletonManager
 import JankyWindow
+import LightBoard
 
 import pygame
 from time import sleep
@@ -14,6 +15,7 @@ pygame.init()
 TableConfig.setupPinModes()
 SkeletonManager.setupPinModes()
 JankyWindow.init()
+LightBoard.clearBoard()
 
 soundManager = SoundManager.SoundManager()
 lobbyController = LobbyController.LobbyController(soundManager)
@@ -44,6 +46,8 @@ while True:
         print("End Game Idle")
         lobbyController.runEndGameIdle()
         SkeletonManager.skeletonDown()
+        LightBoard.clearBoard()
     else:
         soundManager.playFailSound()
-    
+        sleep(3)
+        LightBoard.clearBoard()

@@ -2,6 +2,7 @@ import ScoreKeeper
 import GameTable
 import SoundManager
 import JankyWindow
+import LightBoard
 from time import sleep
 
 # all times in seconds
@@ -54,6 +55,7 @@ class GameController:
         print("Score: " + str(score) + " / " + str(self._winningScore))
         for table in self._tables:
             table.scoreboard.updateDisplay(score, self._timeRemaining)
+        LightBoard.update()
         return;
     
     def _updateMultipliers(self):
@@ -79,6 +81,7 @@ class GameController:
         return;
 
     def runGame(self):
+        JankyWindow.clear()
         while self._timeRemaining > 0:
             sleep(TIME_PER_CYCLE)
             self._update(TIME_PER_CYCLE)
