@@ -3,6 +3,8 @@ import LobbyTable
 import ButtonLight
 import ButtonControl
 import JankyWindow
+import LightBoard
+import TableConfig
 from time import sleep
 
 TIME_PER_CYCLE = 0.005
@@ -12,7 +14,7 @@ class LobbyController:
     def __init__(self, soundManager):
         self._soundManager = soundManager
         self._tables = [LobbyTable.LobbyTable(tableNumber) for tableNumber in range(4)]
-        self.activeTableNumbers = []
+        self.activeTableNumbers = [0,1,2,3]
         return
     
     def runEndGameIdle(self):
@@ -29,20 +31,22 @@ class LobbyController:
                     break;
             else:
                 JankyWindow.idle()
+            for table in self._tables:
+                table.update(TIME_PER_CYCLE)
+                if table.button.didClickButton():
+                    table.light.setLightState(ButtonLight.ON)
+                    self._soundManager.playJoinSoundForTable(table.tableNumber)
         return
     
     def runLobby(self):
-        timeRemaining = LOBBY_TIME
-        self.activeTableNumbers[:] = []
-        activeTables = []
         for table in self._tables:
             table.light.setLightState(ButtonLight.CYCLE_BLINK)
         JankyWindow.clear()
-        while timeRemaining > 0:
+        antiClickTime = 5
+        while True:
             sleep(TIME_PER_CYCLE)
-            if len(activeTables) > 0:
-                timeRemaining -= TIME_PER_CYCLE
-                print("Lobby time remaining: " + str(timeRemaining))
+            antiClickTime -= TIME_PER_CYCLE
+            if antiClickTime < 0:
                 if JankyWindow.didClickMouse():
                     break
             else:
@@ -50,21 +54,23 @@ class LobbyController:
             for table in self._tables:
                 table.update(TIME_PER_CYCLE)
                 if table.button.didClickButton():
-                    if table not in activeTables:
-                        activeTables.append(table)
-                        table.light.setLightState(ButtonLight.ON)
-                        self._soundManager.playJoinSoundForTable(table.tableNumber)
-                        JankyWindow.clear()
-                        print(table.name + " joined")
-            if len(activeTables) >= len(self._tables):
-                break
-        for i in range(4):
-            self.activeTableNumbers.append(i)
+                    table.light.setLightState(ButtonLight.ON)
+                    self._soundManager.playJoinSoundForTable(table.tableNumber)
         for table in self._tables:
             table.light.setLightState(ButtonLight.ON)
         return
     
     def runStartingSequence(self):
         self._soundManager.playStartingSound()
+        for x in range(3):
+            for i in range(101):
+                percent = (100-i)/100.0
+                for tableNumber in range(4):
+                    stripNumber = 2*tableNumber
+                    color = TableConfig.TABLES[tableNumber].lightColor
+                    LightBoard.setStrip(stripNumber, 1, int(color[0]*percent), int(color[1]*percent), int(color[2]*percent))
+                    stripNumber += 1
+                    LightBoard.setStrip(stripNumber, 1, int(color[0]*percent), int(color[1]*percent), int(color[2]*percent))
+                sleep(0.01)
         #TODO: play fancy flashing/fading sequence
-        sleep(3.5)
+        sleep(0.5)

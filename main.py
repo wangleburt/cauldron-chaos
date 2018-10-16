@@ -5,6 +5,7 @@ import wiringpi
 import TableConfig
 import SkeletonManager
 import JankyWindow
+import GameLogger
 import LightBoard
 
 import pygame
@@ -15,6 +16,8 @@ pygame.init()
 TableConfig.setupPinModes()
 SkeletonManager.setupPinModes()
 JankyWindow.init()
+
+LightBoard.init()
 LightBoard.clearBoard()
 
 soundManager = SoundManager.SoundManager()
@@ -36,6 +39,7 @@ while True:
     gameController.setupNewGameWithTableNumbers(activeTableNumbers)
     gameController.runGame()
     
+    GameLogger.logGame(gameController.scoreKeeper)
     soundManager.playLobbyMusic()
     if gameController.victory:
         SkeletonManager.skeletonUp()

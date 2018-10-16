@@ -2,13 +2,13 @@ import ScoreKeeper
 import GameTable
 import SoundManager
 import JankyWindow
-import LightBoard
+import ButtonControl
 from time import sleep
 
 # all times in seconds
 GAME_TIME = 60
 MULTIPLIER_TIME = 5
-TIME_PER_CYCLE = 0.05
+TIME_PER_CYCLE = 0.01
 SOUND_EFFECT_DELAY = 0.3
 
 class GameController:
@@ -18,7 +18,7 @@ class GameController:
         return;
     
     def setupNewGameWithTableNumbers(self, tableNumbers):
-        self._scoreKeeper = ScoreKeeper.ScoreKeeper()
+        self.scoreKeeper = ScoreKeeper.ScoreKeeper()
         self._winningScore = ScoreKeeper.winningScoreForTableCount(len(tableNumbers))
         self._tables = [GameTable.GameTable(tableNumber) for tableNumber in tableNumbers]
         for table in self._tables:
@@ -33,29 +33,31 @@ class GameController:
     def _update(self, timeSinceLastUpdate):
         self._timeRemaining -= timeSinceLastUpdate
         self._updateMultipliers()
-        self._updateTableScores()
+        self._updateTables(timeSinceLastUpdate)
         self._updateTableScoreboards()
         return;
 
-    def _updateTableScores(self):
+    def _updateTables(self, timeSinceLastUpdate):
         for table in self._tables:
-            table.update()
+            table.update(timeSinceLastUpdate)
             if table.pendingScore != 0:
                 score = table.pendingScore
                 self._playSoundForScore(score)
                 if score == ScoreKeeper.PURPLE_SCORE:
                     self._addNewMultiplier()
                 score *= self._calculateMultiplier()
-                self._scoreKeeper.addPointsForTable(table.tableNumber, score)
+                self.scoreKeeper.addPointsForTable(table.tableNumber, score)
                 table.pendingScore = 0
+            if table.button.didClickButton():
+                self._soundManager.playJoinSoundForTable(table.tableNumber)
         return;
     
     def _updateTableScoreboards(self):
-        score = self._scoreKeeper.scoreForTeam()
+        score = self.scoreKeeper.scoreForTeam()
         print("Score: " + str(score) + " / " + str(self._winningScore))
         for table in self._tables:
+            table.scoreboard.multiplierMode = (len(self._multipliers) > 0)
             table.scoreboard.updateDisplay(score, self._timeRemaining)
-        LightBoard.update()
         return;
     
     def _updateMultipliers(self):
@@ -77,7 +79,9 @@ class GameController:
                 self._soundManager.playScoreSound()
                 self._lastSoundPlayed = self._timeRemaining
         elif score == ScoreKeeper.PURPLE_SCORE:
-            self._soundManager.playPowerupSound()
+            if self._lastSoundPlayed > self._timeRemaining + SOUND_EFFECT_DELAY:
+                self._soundManager.playPowerupSound()
+                self._lastSoundPlayed = self._timeRemaining
         return;
 
     def runGame(self):
@@ -86,9 +90,12 @@ class GameController:
             sleep(TIME_PER_CYCLE)
             self._update(TIME_PER_CYCLE)
             print("Game time remaining: " + str(self._timeRemaining))
-            if JankyWindow.didClickMouse():
+            click = JankyWindow.clickType()
+            if click == JankyWindow.MOUSE_LEFT:
                 self._tables[0].pendingScore = ScoreKeeper.GREEN_SCORE
-            score = self._scoreKeeper.scoreForTeam()
+            elif click == JankyWindow.MOUSE_RIGHT:
+                self._tables[0].pendingScore = ScoreKeeper.PURPLE_SCORE
+            score = self.scoreKeeper.scoreForTeam()
             if score >= self._winningScore:
                 self.victory = True
                 break
