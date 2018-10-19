@@ -77,4 +77,4 @@ def lightTest():
         
     return
 
-lightTest()
+#lightTest()

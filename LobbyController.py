@@ -34,7 +34,6 @@ class LobbyController:
             for table in self._tables:
                 table.update(TIME_PER_CYCLE)
                 if table.button.didClickButton():
-                    table.light.setLightState(ButtonLight.ON)
                     self._soundManager.playJoinSoundForTable(table.tableNumber)
         return
     
@@ -62,6 +61,7 @@ class LobbyController:
     
     def runStartingSequence(self):
         self._soundManager.playStartingSound()
+        sleep(0.6)
         for x in range(3):
             for i in range(101):
                 percent = (100-i)/100.0
@@ -73,4 +73,4 @@ class LobbyController:
                     LightBoard.setStrip(stripNumber, 1, int(color[0]*percent), int(color[1]*percent), int(color[2]*percent))
                 sleep(0.01)
         #TODO: play fancy flashing/fading sequence
-        sleep(0.5)
+        #sleep(0.5)

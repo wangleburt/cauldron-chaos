@@ -53,5 +53,5 @@ while True:
         LightBoard.clearBoard()
     else:
         soundManager.playFailSound()
-        sleep(3)
+        sleep(6)
         LightBoard.clearBoard()

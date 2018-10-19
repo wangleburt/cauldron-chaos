@@ -7,12 +7,12 @@ class TableSoundPack:
 class SoundManager:
     def __init__(self):
         self.scoreSound = pygame.mixer.Sound("sfx/points-green.wav")
-        self.scoreSound.set_volume(0.6)
+        self.scoreSound.set_volume(0.9)
         self.powerupSound = pygame.mixer.Sound("sfx/points-purple.wav")
         self.victorySound = pygame.mixer.Sound("sfx/fanfare.wav")
         self.skeletonSound = pygame.mixer.Sound("sfx/skeleton-rant.wav")
         self.startingSound = pygame.mixer.Sound("sfx/ready-set-go.wav")
-        self.startingSound.set_volume(0.3)
+        self.startingSound.set_volume(0.5)
         self.failSound = pygame.mixer.Sound("sfx/buzzer.wav")
         self.tableSounds = [TableSoundPack() for i in range(4)]
         for i in range(4):

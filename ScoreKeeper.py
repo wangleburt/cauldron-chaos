@@ -9,21 +9,6 @@ def winningScoreForTableCount(tableCount):
 
 class ScoreKeeper:
     def __init__(self):
-        self.scores = [0, 0, 0, 0]
-    
-    def scoreForTeam(self):
-        total = 0;
-        for i in range(len(self.scores)):
-            total += self.scores[i]
-        return total;
-    
-    def scoreForTable(self, tableNumber):
-        if tableNumber >= 0 and tableNumber < len(self.scores):
-            return self.scores[tableNumber]
-        else:
-            return 0
-    
-    def addPointsForTable(self, tableNumber, points):
-        if tableNumber >= 0 and tableNumber < len(self.scores):
-            self.scores[tableNumber] += points
-        return;
+        self.score = 0
+        self.normies = 0
+        self.purples = 0

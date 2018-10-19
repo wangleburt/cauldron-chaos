@@ -43,17 +43,20 @@ class GameController:
             if table.pendingScore != 0:
                 score = table.pendingScore
                 self._playSoundForScore(score)
-                if score == ScoreKeeper.PURPLE_SCORE:
-                    self._addNewMultiplier()
                 score *= self._calculateMultiplier()
-                self.scoreKeeper.addPointsForTable(table.tableNumber, score)
+                if table.pendingScore == ScoreKeeper.PURPLE_SCORE:
+                    self._addNewMultiplier()
+                    self.scoreKeeper.purples += 1
+                else:
+                    self.scoreKeeper.normies += 1
+                self.scoreKeeper.score += score
                 table.pendingScore = 0
             if table.button.didClickButton():
                 self._soundManager.playJoinSoundForTable(table.tableNumber)
         return;
     
     def _updateTableScoreboards(self):
-        score = self.scoreKeeper.scoreForTeam()
+        score = self.scoreKeeper.score
         print("Score: " + str(score) + " / " + str(self._winningScore))
         for table in self._tables:
             table.scoreboard.multiplierMode = (len(self._multipliers) > 0)
@@ -71,7 +74,8 @@ class GameController:
         return;
     
     def _calculateMultiplier(self):
-        return pow(2, len(self._multipliers))
+        #return pow(2, len(self._multipliers))
+        return 2 if len(self._multipliers) > 0 else 1
 
     def _playSoundForScore(self, score):
         if score == ScoreKeeper.GREEN_SCORE:
@@ -94,9 +98,8 @@ class GameController:
             if click == JankyWindow.MOUSE_LEFT:
                 self._tables[0].pendingScore = ScoreKeeper.GREEN_SCORE
             elif click == JankyWindow.MOUSE_RIGHT:
-                self._tables[0].pendingScore = ScoreKeeper.PURPLE_SCORE
-            score = self.scoreKeeper.scoreForTeam()
-            if score >= self._winningScore:
+                self._tables[1].pendingScore = ScoreKeeper.PURPLE_SCORE
+            if self.scoreKeeper.score >= self._winningScore:
                 self.victory = True
                 break
         return
